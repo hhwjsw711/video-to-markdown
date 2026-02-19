@@ -19,7 +19,7 @@ const ConvexCorner = () => (
         width="80"
         height="80"
         viewBox="0 0 250 250"
-        style={{ fill: "var(--mantine-color-dark-5)" }}
+        style={{ fill: "var(--mantine-color-dark-5)", display: "block" }}
       >
         <path d="M0,0 L0,250 L250,250 Z" />
       </svg>
