@@ -15,6 +15,8 @@ import VideosList from "./components/VideosList";
 import VideoModal from "./components/VideoModal";
 import ApiPage from "./components/ApiPage";
 import SparkleTitle from "./components/SparkleTitle";
+import GitHubCorner from "./components/GitHubCorner";
+import ConvexCorner from "./components/ConvexCorner";
 import { routes, useRoute } from "./router";
 
 const Logo = () => (
@@ -215,6 +217,8 @@ export default function App() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <ConvexCorner />
+      <GitHubCorner />
       <Header />
       <Box style={{ flex: 1 }}>
         <Container size="xl" py="xl">
