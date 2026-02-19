@@ -5,14 +5,16 @@ import {
   Title,
   Text,
   ThemeIcon,
+  Anchor,
 } from "@mantine/core";
 import VideoForm from "./components/VideoForm";
 import VideosList from "./components/VideosList";
 import VideoModal from "./components/VideoModal";
+import ApiPage from "./components/ApiPage";
 import GitHubCorner from "./components/GitHubCorner";
 import ConvexCorner from "./components/ConvexCorner";
 import SparkleTitle from "./components/SparkleTitle";
-import { useRoute } from "./router";
+import { routes, useRoute } from "./router";
 
 const Logo = () => (
   <ThemeIcon size="xl" radius="md" color="red">
@@ -21,6 +23,33 @@ const Logo = () => (
     </svg>
   </ThemeIcon>
 );
+
+const Nav = () => {
+  const route = useRoute();
+  const isApi = route.name === "api";
+  return (
+    <Group gap="lg" justify="center">
+      <Anchor
+        href={routes.home({}).href}
+        onClick={(e) => { e.preventDefault(); routes.home({}).push(); }}
+        fw={isApi ? 400 : 600}
+        c={isApi ? "dimmed" : "red"}
+        underline="never"
+      >
+        Generator
+      </Anchor>
+      <Anchor
+        href={routes.api().href}
+        onClick={(e) => { e.preventDefault(); routes.api().push(); }}
+        fw={isApi ? 600 : 400}
+        c={isApi ? "red" : "dimmed"}
+        underline="never"
+      >
+        API
+      </Anchor>
+    </Group>
+  );
+};
 
 const HeroSection = () => (
   <Stack align="center" gap="md">
@@ -34,6 +63,7 @@ const HeroSection = () => (
       Simply paste a YouTube URL and get beautiful markdown code with
       thumbnails, perfect for documentation, READMEs, and blog posts.
     </Text>
+    <Nav />
   </Stack>
 );
 
@@ -47,6 +77,7 @@ const VideosSection = () => (
 export default function App() {
   const route = useRoute();
   const videoParam = route.name === "home" ? route.params.video : undefined;
+  const isApi = route.name === "api";
 
   return (
     <div style={{ minHeight: "100vh", position: "relative" }}>
@@ -55,8 +86,14 @@ export default function App() {
       <Container size="xl" py="xl" style={{ position: "relative", zIndex: 1 }}>
         <Stack gap="xl">
           <HeroSection />
-          <VideoForm />
-          <VideosSection />
+          {isApi ? (
+            <ApiPage />
+          ) : (
+            <>
+              <VideoForm />
+              <VideosSection />
+            </>
+          )}
         </Stack>
       </Container>
       {videoParam && <VideoModal videoId={videoParam} />}

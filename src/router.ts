@@ -5,4 +5,5 @@ export const { RouteProvider, useRoute, routes } = createRouter({
     { page: param.query.optional.number, video: param.query.optional.string },
     () => "/",
   ),
+  api: defineRoute({}, () => "/api"),
 });

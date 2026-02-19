@@ -15,6 +15,32 @@ This tool allows you to:
 
 Perfect for documentation, README files, blog posts, or anywhere you want to embed YouTube videos in markdown format while showing an attractive thumbnail preview.
 
+## Public API
+
+You can generate markdown programmatically via a simple HTTP POST request - no API key required.
+
+**Endpoint:** `POST https://quirky-squirrel-220.convex.site/api/markdown`
+
+```bash
+curl -X POST https://quirky-squirrel-220.convex.site/api/markdown \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://youtu.be/dQw4w9WgXcQ"}'
+```
+
+**Response:**
+
+```json
+{
+  "markdown": "[![Never Gonna Give You Up](https://thumbs.video-to-markdown.com/abc123.jpg)](https://youtu.be/dQw4w9WgXcQ)",
+  "title": "Never Gonna Give You Up",
+  "url": "https://youtu.be/dQw4w9WgXcQ"
+}
+```
+
+If the video has already been processed, the result is returned from cache instantly. If new, it fetches metadata and generates the decorated thumbnail before responding.
+
+Full API documentation is available at [video-to-markdown.com/api](https://video-to-markdown.com/api).
+
 ## Learn More
 
 Built with [Convex](https://convex.dev/) - the full-stack TypeScript platform that makes building apps delightfully simple.
