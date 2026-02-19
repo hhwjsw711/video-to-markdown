@@ -3,7 +3,7 @@ const GitHubCorner = () => (
     href="https://github.com/mikecann/video-to-markdown"
     target="_blank"
     rel="noopener noreferrer"
-    style={{ position: "fixed", top: 0, right: 0, zIndex: 50 }}
+    style={{ position: "fixed", bottom: 0, right: 0, zIndex: 200, transform: "scaleY(-1)" }}
     aria-label="View source on GitHub"
   >
     <svg
