@@ -1,4 +1,15 @@
-import { useState } from "react";
+import {
+  Card,
+  Image,
+  Text,
+  Code,
+  CopyButton,
+  ActionIcon,
+  Tooltip,
+  Badge,
+  Stack,
+  Box,
+} from "@mantine/core";
 import { Doc } from "../../convex/_generated/dataModel";
 
 function timeAgo(timestamp: number): string {
@@ -21,100 +32,80 @@ interface VideoCardProps {
 }
 
 export default function VideoCard({ video }: VideoCardProps) {
-  const [copied, setCopied] = useState(false);
-
-  // Dynamically generate markdown code using the processed thumbnail URL
   const markdownCode = `[![${video.title}](${video.processedThumbnailUrl})](${video.url})`;
 
-  const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(markdownCode)
-      .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      })
-      .catch((err) => console.error("Failed to copy:", err));
-  };
-
-  const CopyIcon = () => (
-    <svg
-      className="w-4 h-4 text-gray-500"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-      />
-    </svg>
-  );
-
-  const CheckIcon = () => (
-    <svg
-      className="w-4 h-4 text-green-600"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M5 13l4 4L19 7"
-      />
-    </svg>
-  );
-
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden relative">
-      <div className="absolute top-3 right-3 z-10 px-2 py-0.5 rounded bg-black/60 text-xs text-gray-300">
+    <Card shadow="sm" radius="md" withBorder style={{ position: "relative" }}>
+      <Badge
+        size="xs"
+        variant="filled"
+        color="dark"
+        style={{ position: "absolute", top: 8, right: 8, zIndex: 1 }}
+      >
         {timeAgo(video._creationTime)}
-      </div>
+      </Badge>
 
-      <div className="p-4">
-        <div className="space-y-3">
-          <div>
-            <label className="block text-xs font-medium text-gray-300 mb-1">
-              Preview
-            </label>
-            <div className="border border-gray-600 rounded p-3 bg-gray-900">
-              <a
-                href={video.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block hover:opacity-80 transition-opacity"
-              >
-                <img
-                  src={video.processedThumbnailUrl}
-                  alt={video.title}
-                  className="w-full rounded"
-                />
-              </a>
-            </div>
-          </div>
+      <Stack gap="sm">
+        <Box>
+          <Text size="xs" fw={500} c="dimmed" mb={4}>
+            Preview
+          </Text>
+          <a
+            href={video.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "block" }}
+          >
+            <Image
+              src={video.processedThumbnailUrl}
+              alt={video.title}
+              radius="sm"
+            />
+          </a>
+        </Box>
 
-          <div>
-            <label className="block text-xs font-medium text-gray-300 mb-1">
-              Markdown Code
-            </label>
-            <div className="relative">
-              <pre className="bg-gray-900 p-3 rounded text-xs font-mono text-gray-300 overflow-x-auto border border-gray-600">
-                <code>{markdownCode}</code>
-              </pre>
-              <button
-                onClick={copyToClipboard}
-                className="absolute top-2 right-2 p-1.5 bg-gray-700 border border-gray-600 rounded hover:bg-gray-600 transition-colors"
-                title="Copy to clipboard"
-              >
-                {copied ? <CheckIcon /> : <CopyIcon />}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <Box>
+          <Text size="xs" fw={500} c="dimmed" mb={4}>
+            Markdown Code
+          </Text>
+          <Box style={{ position: "relative" }}>
+            <Code
+              block
+              style={{
+                fontSize: "var(--mantine-font-size-xs)",
+                whiteSpace: "pre",
+                overflowX: "auto",
+                paddingRight: 40,
+              }}
+            >
+              {markdownCode}
+            </Code>
+            <CopyButton value={markdownCode}>
+              {({ copied, copy }) => (
+                <Tooltip label={copied ? "Copied" : "Copy"} withArrow>
+                  <ActionIcon
+                    variant="subtle"
+                    color={copied ? "green" : "gray"}
+                    onClick={copy}
+                    style={{ position: "absolute", top: 6, right: 6 }}
+                    size="sm"
+                  >
+                    {copied ? (
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    )}
+                  </ActionIcon>
+                </Tooltip>
+              )}
+            </CopyButton>
+          </Box>
+        </Box>
+      </Stack>
+    </Card>
   );
 }

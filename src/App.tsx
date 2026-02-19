@@ -1,53 +1,58 @@
-import { Toaster } from "sonner";
-import { SparklesText } from "./components/ui/sparkles-text";
+import {
+  Container,
+  Stack,
+  Group,
+  Title,
+  Text,
+  ThemeIcon,
+} from "@mantine/core";
 import VideoForm from "./components/VideoForm";
 import VideosList from "./components/VideosList";
 import GitHubCorner from "./components/GitHubCorner";
 import ConvexCorner from "./components/ConvexCorner";
 
 const Logo = () => (
-  <div className="w-10 h-10 bg-red-600 rounded flex items-center justify-center">
-    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+  <ThemeIcon size="xl" radius="md" color="red">
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
       <path d="M8 5v14l11-7z" />
     </svg>
-  </div>
+  </ThemeIcon>
 );
 
 const HeroSection = () => (
-  <div className="text-center">
-    <div className="mb-8 flex items-center justify-center gap-3">
+  <Stack align="center" gap="md">
+    <Group gap="sm">
       <Logo />
-      <SparklesText text="Video to Markdown" className="text-5xl font-bold" />
-    </div>
-    <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+      <Title order={1} fw={700}>
+        Video to Markdown
+      </Title>
+    </Group>
+    <Text size="lg" c="dimmed" maw={600} ta="center">
       Simply paste a YouTube URL and get beautiful markdown code with
       thumbnails, perfect for documentation, READMEs, and blog posts.
-    </p>
-  </div>
+    </Text>
+  </Stack>
 );
 
 const VideosSection = () => (
-  <div>
-    <h3 className="text-xl font-semibold text-white mb-6">Generated Videos</h3>
+  <Stack gap="md">
+    <Title order={3}>Generated Videos</Title>
     <VideosList />
-  </div>
+  </Stack>
 );
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-900 relative">
-      <Toaster theme="dark" position="top-center" richColors />
+    <div style={{ minHeight: "100vh", position: "relative" }}>
       <ConvexCorner />
       <GitHubCorner />
-      <div className="relative z-10">
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="space-y-8">
-            <HeroSection />
-            <VideoForm />
-            <VideosSection />
-          </div>
-        </main>
-      </div>
+      <Container size="xl" py="xl" style={{ position: "relative", zIndex: 1 }}>
+        <Stack gap="xl">
+          <HeroSection />
+          <VideoForm />
+          <VideosSection />
+        </Stack>
+      </Container>
     </div>
   );
 }

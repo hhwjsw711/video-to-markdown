@@ -1,6 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useAction } from "convex/react";
-import { toast } from "sonner";
+import { notifications } from "@mantine/notifications";
+import { TextInput, Button, Stack } from "@mantine/core";
 import { api } from "../../convex/_generated/api";
 
 function getFriendlyError(err: unknown): string {
@@ -32,47 +33,39 @@ export default function VideoForm() {
 
     processVideo({ url: url.trim() })
       .then(() => setUrl(""))
-      .catch((err) => toast.error(getFriendlyError(err)))
+      .catch((err) =>
+        notifications.show({
+          title: "Error",
+          message: getFriendlyError(err),
+          color: "red",
+        }),
+      )
       .finally(() => setIsLoading(false));
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="url"
-            className="block text-sm font-medium text-white mb-2"
-          >
-            YouTube URL
-          </label>
-          <input
-            type="url"
-            id="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://youtu.be/G0kHv7qqqO1"
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-600 text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-colors"
-            disabled={isLoading}
-            required
-          />
-        </div>
-
-        <button
+    <form onSubmit={handleSubmit} style={{ maxWidth: 600, margin: "0 auto", width: "100%" }}>
+      <Stack gap="sm">
+        <TextInput
+          label="YouTube URL"
+          placeholder="https://youtu.be/G0kHv7qqqO1"
+          value={url}
+          onChange={(e) => setUrl(e.currentTarget.value)}
+          disabled={isLoading}
+          required
+          size="md"
+        />
+        <Button
           type="submit"
-          disabled={isLoading || !url.trim()}
-          className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+          fullWidth
+          size="md"
+          color="red"
+          loading={isLoading}
+          disabled={!url.trim()}
         >
-          {isLoading ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Processing...
-            </>
-          ) : (
-            "Generate Markdown"
-          )}
-        </button>
-      </form>
-    </div>
+          Generate Markdown
+        </Button>
+      </Stack>
+    </form>
   );
 }
