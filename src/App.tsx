@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import { SparklesText } from "./components/ui/sparkles-text";
 import VideoForm from "./components/VideoForm";
 import VideosList from "./components/VideosList";
@@ -35,6 +36,7 @@ const VideosSection = () => (
 export default function App() {
   return (
     <div className="min-h-screen bg-gray-900 relative">
+      <Toaster theme="dark" position="top-center" richColors />
       <ConvexCorner />
       <GitHubCorner />
       <div className="relative z-10">

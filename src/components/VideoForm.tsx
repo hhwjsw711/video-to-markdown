@@ -1,13 +1,26 @@
 import { useState, FormEvent } from "react";
 import { useAction } from "convex/react";
+import { toast } from "sonner";
 import { api } from "../../convex/_generated/api";
+
+function getFriendlyError(err: unknown): string {
+  const message = err instanceof Error ? err.message : String(err);
+  if (message.includes("Invalid YouTube URL"))
+    return "That doesn't look like a valid YouTube URL. Please try again.";
+  if (
+    message.includes("Failed to fetch video metadata") ||
+    message.includes("400")
+  )
+    return "Couldn't find that video. Please check the URL and try again.";
+  if (message.includes("Invalid YouTube metadata"))
+    return "Couldn't read metadata for that video. It may be private or unavailable.";
+  return "Something went wrong. Please try again.";
+}
 
 export default function VideoForm() {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  // Type-safe access to the API - will work once convex generates types
   const processVideo = useAction(api.videos.processVideoUrl);
 
   const handleSubmit = (e: FormEvent) => {
@@ -16,15 +29,10 @@ export default function VideoForm() {
     if (!url.trim()) return;
 
     setIsLoading(true);
-    setError("");
 
     processVideo({ url: url.trim() })
       .then(() => setUrl(""))
-      .catch((err) => {
-        const errorMessage =
-          err instanceof Error ? err.message : "Failed to process video";
-        setError(errorMessage);
-      })
+      .catch((err) => toast.error(getFriendlyError(err)))
       .finally(() => setIsLoading(false));
   };
 
@@ -49,12 +57,6 @@ export default function VideoForm() {
             required
           />
         </div>
-
-        {error && (
-          <div className="p-4 bg-red-900/20 border border-red-800 rounded-lg">
-            <p className="text-red-300 text-sm">{error}</p>
-          </div>
-        )}
 
         <button
           type="submit"

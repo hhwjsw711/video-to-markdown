@@ -1,6 +1,9 @@
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { routes, useRoute } from "../router";
 import VideoCard from "./VideoCard";
+
+const ITEMS_PER_PAGE = 21;
 
 const LoadingSkeleton = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -38,18 +41,99 @@ const EmptyState = () => (
   </div>
 );
 
-export default function VideosList() {
-  // Type-safe access to the API - will work once convex generates types
-  const videos = useQuery(api?.videos?.getVideos || null, { limit: 20 });
+function getPageNumbers(currentPage: number, totalPages: number): (number | "...")[] {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i);
+  }
 
-  if (videos === undefined) return <LoadingSkeleton />;
-  if (videos.length === 0) return <EmptyState />;
+  const pages: (number | "...")[] = [0];
+
+  if (currentPage > 2) pages.push("...");
+
+  const start = Math.max(1, currentPage - 1);
+  const end = Math.min(totalPages - 2, currentPage + 1);
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+
+  if (currentPage < totalPages - 3) pages.push("...");
+
+  pages.push(totalPages - 1);
+  return pages;
+}
+
+export default function VideosList() {
+  const route = useRoute();
+  const page =
+    route.name === "home" && route.params.page != null
+      ? route.params.page
+      : 0;
+
+  const result = useQuery(api.videos.getVideos, {
+    page,
+    perPage: ITEMS_PER_PAGE,
+  });
+
+  if (result === undefined) return <LoadingSkeleton />;
+  if (result.totalCount === 0) return <EmptyState />;
+
+  const { videos, totalCount } = result;
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const pageNumbers = getPageNumbers(page, totalPages);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {videos.map((video) => (
-        <VideoCard key={video._id} video={video} />
-      ))}
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {videos.map((video) => (
+          <VideoCard key={video._id} video={video} />
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1.5">
+          <a
+            {...routes.home({ page: Math.max(0, page - 1) }).link}
+            className={`px-3 py-2 text-sm font-medium rounded-lg border border-gray-600 text-gray-300 transition-colors ${
+              page === 0
+                ? "opacity-40 pointer-events-none"
+                : "hover:bg-gray-700"
+            }`}
+          >
+            Previous
+          </a>
+
+          {pageNumbers.map((p, i) =>
+            p === "..." ? (
+              <span key={`ellipsis-${i}`} className="px-2 py-2 text-sm text-gray-500">
+                ...
+              </span>
+            ) : (
+              <a
+                key={p}
+                {...routes.home({ page: p }).link}
+                className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
+                  p === page
+                    ? "bg-red-600 border-red-600 text-white"
+                    : "border-gray-600 text-gray-300 hover:bg-gray-700"
+                }`}
+              >
+                {p + 1}
+              </a>
+            ),
+          )}
+
+          <a
+            {...routes.home({ page: Math.min(totalPages - 1, page + 1) }).link}
+            className={`px-3 py-2 text-sm font-medium rounded-lg border border-gray-600 text-gray-300 transition-colors ${
+              page >= totalPages - 1
+                ? "opacity-40 pointer-events-none"
+                : "hover:bg-gray-700"
+            }`}
+          >
+            Next
+          </a>
+        </div>
+      )}
     </div>
   );
 }

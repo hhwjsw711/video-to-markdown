@@ -25,11 +25,35 @@ export async function hashThumbnail(arrayBuffer: ArrayBuffer): Promise<string> {
 }
 
 export const getYoutubeOembedMetadata = async (videoId: string) => {
-  const response = await fetch(
-    `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`,
+  const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+
+  // Try YouTube's own oEmbed endpoint first
+  const youtubeResponse = await fetch(
+    `https://www.youtube.com/oembed?url=${encodeURIComponent(videoUrl)}&format=json`,
   );
-  if (!response.ok) throw new Error("Failed to fetch video metadata");
-  return await response.json();
+  if (youtubeResponse.ok) return await youtubeResponse.json();
+
+  console.warn(
+    `YouTube oEmbed returned ${youtubeResponse.status} for ${videoId}, falling back to noembed.com`,
+  );
+
+  // Fallback to noembed.com which proxies oEmbed and works from server environments
+  const noembedResponse = await fetch(
+    `https://noembed.com/embed?url=${encodeURIComponent(videoUrl)}`,
+  );
+  if (noembedResponse.ok) {
+    const data = await noembedResponse.json();
+    if (data.error) {
+      throw new Error(
+        `Failed to fetch video metadata (noembed error): ${data.error}`,
+      );
+    }
+    return data;
+  }
+
+  throw new Error(
+    `Failed to fetch video metadata: YouTube oEmbed returned ${youtubeResponse.status}, noembed.com returned ${noembedResponse.status}`,
+  );
 };
 
 export const getThumbnailUrlForYoutubeVideo = (videoId: string) =>
@@ -187,17 +211,10 @@ export async function checkIfThumbnailChanged({
   }
 }
 
-export const hoursToMilliseconds = (hours: number) => hours * 60 * 60 * 1000;
-
-export const hoursFromNowInMilliseconds = (hours: number) =>
-  Date.now() + hoursToMilliseconds(hours);
-
 export const daysToMilliseconds = (days: number) => days * 24 * 60 * 60 * 1000;
 
 export const daysFromNowInMilliseconds = (days: number) =>
   Date.now() + daysToMilliseconds(days);
-
-export const iife = <T>(fn: () => T): T => fn();
 
 // Calculate the next check interval for thumbnail monitoring
 export const calculateNextInterval = (

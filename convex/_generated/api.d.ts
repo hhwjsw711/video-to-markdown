@@ -8,7 +8,8 @@
  * @module
  */
 
-import type * as debug from "../debug.js";
+import type * as crons from "../crons.js";
+import type * as fluent from "../fluent.js";
 import type * as thumbnailMonitor from "../thumbnailMonitor.js";
 import type * as utils from "../utils.js";
 import type * as videos from "../videos.js";
@@ -28,7 +29,8 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  debug: typeof debug;
+  crons: typeof crons;
+  fluent: typeof fluent;
   thumbnailMonitor: typeof thumbnailMonitor;
   utils: typeof utils;
   videos: typeof videos;
