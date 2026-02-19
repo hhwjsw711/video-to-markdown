@@ -1,7 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useAction } from "convex/react";
 import { notifications } from "@mantine/notifications";
-import { TextInput, Button, Stack, Group, Text } from "@mantine/core";
+import { TextInput, Button, Stack } from "@mantine/core";
 import { ConvexError } from "convex/values";
 import { api } from "../../convex/_generated/api";
 import { routes, useRoute } from "../router";
@@ -41,21 +41,10 @@ export default function VideoForm() {
       .catch((err) => {
         if (err instanceof ConvexError && err.data?.type === "DUPLICATE_VIDEO") {
           const existingId = err.data.id as string;
+          routes.home({ page, video: existingId }).push();
           notifications.show({
             title: "Already added",
-            message: (
-              <Group justify="space-between" mt={4}>
-                <Text size="sm">This video is already in the list.</Text>
-                <Button
-                  size="xs"
-                  variant="light"
-                  color="yellow"
-                  onClick={() => routes.home({ page, video: existingId }).push()}
-                >
-                  View it
-                </Button>
-              </Group>
-            ),
+            message: "This video is already in the list.",
             color: "yellow",
           });
         } else {
