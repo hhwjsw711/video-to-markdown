@@ -10,6 +10,7 @@
 
 import type * as crons from "../crons.js";
 import type * as fluent from "../fluent.js";
+import type * as http from "../http.js";
 import type * as thumbnailMonitor from "../thumbnailMonitor.js";
 import type * as utils from "../utils.js";
 import type * as videos from "../videos.js";
@@ -23,6 +24,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   fluent: typeof fluent;
+  http: typeof http;
   thumbnailMonitor: typeof thumbnailMonitor;
   utils: typeof utils;
   videos: typeof videos;
