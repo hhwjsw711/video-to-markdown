@@ -15,7 +15,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "bun run dev:frontend & bun run dev:backend",
+    "dev": "concurrently -n frontend,backend -c blue,magenta \"bun run dev:frontend\" \"bun run dev:backend\"",
     "dev:ts": "tsc -b --watch",
     "dev:frontend": "vite --open",
     "dev:backend": "convex dev",
@@ -46,6 +46,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
+    "concurrently": "^9.2.1",
     "convex-test": "^0.0.41",
     "eslint": "^10.0.0",
     "eslint-plugin-react-hooks": "^7.0.1",
