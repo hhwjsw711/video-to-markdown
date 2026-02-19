@@ -6,64 +6,198 @@ import {
   Text,
   ThemeIcon,
   Anchor,
+  Box,
+  ActionIcon,
+  Divider,
 } from "@mantine/core";
 import VideoForm from "./components/VideoForm";
 import VideosList from "./components/VideosList";
 import VideoModal from "./components/VideoModal";
 import ApiPage from "./components/ApiPage";
-import GitHubCorner from "./components/GitHubCorner";
-import ConvexCorner from "./components/ConvexCorner";
 import SparkleTitle from "./components/SparkleTitle";
 import { routes, useRoute } from "./router";
 
 const Logo = () => (
-  <ThemeIcon size="xl" radius="md" color="red">
-    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+  <ThemeIcon size="md" radius="sm" color="red">
+    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
       <path d="M8 5v14l11-7z" />
     </svg>
   </ThemeIcon>
 );
 
-const Nav = () => {
+const GitHubIcon = () => (
+  <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+  </svg>
+);
+
+function NavLink({
+  href,
+  onClick,
+  active,
+  children,
+}: {
+  href: string;
+  onClick: (e: React.MouseEvent) => void;
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <Anchor
+      href={href}
+      onClick={onClick}
+      size="sm"
+      fw={500}
+      underline="never"
+      px="sm"
+      py={6}
+      c={active ? "white" : "dimmed"}
+      style={{
+        borderRadius: "var(--mantine-radius-md)",
+        backgroundColor: active ? "var(--mantine-color-dark-5)" : "transparent",
+        transition: "background-color 150ms, color 150ms",
+      }}
+    >
+      {children}
+    </Anchor>
+  );
+}
+
+const Header = () => {
   const route = useRoute();
   const isApi = route.name === "api";
+
   return (
-    <Group gap="lg" justify="center">
-      <Anchor
-        href={routes.home({}).href}
-        onClick={(e) => { e.preventDefault(); routes.home({}).push(); }}
-        fw={isApi ? 400 : 600}
-        c={isApi ? "dimmed" : "red"}
-        underline="never"
-      >
-        Generator
-      </Anchor>
-      <Anchor
-        href={routes.api().href}
-        onClick={(e) => { e.preventDefault(); routes.api().push(); }}
-        fw={isApi ? 600 : 400}
-        c={isApi ? "red" : "dimmed"}
-        underline="never"
-      >
-        API
-      </Anchor>
-    </Group>
+    <Box
+      component="header"
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+        borderBottom: "1px solid var(--mantine-color-dark-5)",
+        backgroundColor: "rgba(26, 27, 30, 0.85)",
+        backdropFilter: "blur(12px)",
+      }}
+    >
+      <Container size="xl">
+        <Group h={56} justify="space-between">
+          <Anchor
+            href={routes.home({}).href}
+            onClick={(e) => { e.preventDefault(); routes.home({}).push(); }}
+            underline="never"
+            c="white"
+          >
+            <Group gap="xs">
+              <Logo />
+              <Text fw={700} size="sm">Video to Markdown</Text>
+            </Group>
+          </Anchor>
+
+          <Group gap={4}>
+            <NavLink
+              href={routes.home({}).href}
+              onClick={(e) => { e.preventDefault(); routes.home({}).push(); }}
+              active={!isApi}
+            >
+              Generator
+            </NavLink>
+            <NavLink
+              href={routes.api().href}
+              onClick={(e) => { e.preventDefault(); routes.api().push(); }}
+              active={isApi}
+            >
+              API
+            </NavLink>
+            <ActionIcon
+              component="a"
+              href="https://github.com/mikecann/video-to-markdown"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="subtle"
+              color="gray"
+              size="lg"
+              aria-label="View source on GitHub"
+            >
+              <GitHubIcon />
+            </ActionIcon>
+          </Group>
+        </Group>
+      </Container>
+    </Box>
+  );
+};
+
+const Footer = () => {
+  const route = useRoute();
+  const isApi = route.name === "api";
+
+  return (
+    <Box component="footer" mt="xl" py="xl" style={{ borderTop: "1px solid var(--mantine-color-dark-5)" }}>
+      <Container size="xl">
+        <Group justify="space-between" wrap="wrap" gap="md">
+          <Group gap="xs">
+            <Logo />
+            <Text size="sm" fw={600} c="dimmed">Video to Markdown</Text>
+          </Group>
+          <Group gap="lg">
+            <Anchor
+              href={routes.home({}).href}
+              onClick={(e) => { e.preventDefault(); routes.home({}).push(); }}
+              size="sm"
+              c={!isApi ? "white" : "dimmed"}
+              underline="never"
+            >
+              Generator
+            </Anchor>
+            <Anchor
+              href={routes.api().href}
+              onClick={(e) => { e.preventDefault(); routes.api().push(); }}
+              size="sm"
+              c={isApi ? "white" : "dimmed"}
+              underline="never"
+            >
+              API
+            </Anchor>
+            <Divider orientation="vertical" />
+            <Anchor
+              href="https://github.com/mikecann/video-to-markdown"
+              target="_blank"
+              rel="noopener noreferrer"
+              size="sm"
+              c="dimmed"
+              underline="never"
+            >
+              GitHub
+            </Anchor>
+            <Anchor
+              href="https://convex.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              size="sm"
+              c="dimmed"
+              underline="never"
+            >
+              Built with Convex
+            </Anchor>
+          </Group>
+        </Group>
+        <Text size="xs" c="dark.3" mt="md">
+          © {new Date().getFullYear()} Video to Markdown. Free and open source.
+        </Text>
+      </Container>
+    </Box>
   );
 };
 
 const HeroSection = () => (
-  <Stack align="center" gap="md">
-    <Group gap="sm">
-      <Logo />
-      <SparkleTitle order={1} fw={700}>
-        Video to Markdown
-      </SparkleTitle>
-    </Group>
-    <Text size="lg" c="dimmed" maw={600} ta="center">
-      Simply paste a YouTube URL and get beautiful markdown code with
-      thumbnails, perfect for documentation, READMEs, and blog posts.
+  <Stack align="center" gap="lg" py="xl">
+    <SparkleTitle order={1} fw={900} ta="center" style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)" }}>
+      Video to Markdown
+    </SparkleTitle>
+    <Text size="lg" c="dimmed" maw={540} ta="center" lh={1.7}>
+      Paste a YouTube URL and get a beautiful markdown snippet with a
+      decorated thumbnail - perfect for READMEs, docs, and blog posts.
     </Text>
-    <Nav />
   </Stack>
 );
 
@@ -80,22 +214,24 @@ export default function App() {
   const isApi = route.name === "api";
 
   return (
-    <div style={{ minHeight: "100vh", position: "relative" }}>
-      <ConvexCorner />
-      <GitHubCorner />
-      <Container size="xl" py="xl" style={{ position: "relative", zIndex: 1 }}>
-        <Stack gap="xl">
-          <HeroSection />
-          {isApi ? (
-            <ApiPage />
-          ) : (
-            <>
-              <VideoForm />
-              <VideosSection />
-            </>
-          )}
-        </Stack>
-      </Container>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <Header />
+      <Box style={{ flex: 1 }}>
+        <Container size="xl" py="xl">
+          <Stack gap="xl">
+            {!isApi && <HeroSection />}
+            {isApi ? (
+              <ApiPage />
+            ) : (
+              <>
+                <VideoForm />
+                <VideosSection />
+              </>
+            )}
+          </Stack>
+        </Container>
+      </Box>
+      <Footer />
       {videoParam && <VideoModal videoId={videoParam} />}
     </div>
   );
