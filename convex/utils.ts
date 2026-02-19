@@ -59,15 +59,29 @@ export const getYoutubeOembedMetadata = async (videoId: string) => {
 export const getThumbnailUrlForYoutubeVideo = (videoId: string) =>
   `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
+const YOUTUBE_THUMBNAIL_QUALITIES = [
+  "maxresdefault",
+  "sddefault",
+  "hqdefault",
+  "mqdefault",
+  "default",
+] as const;
+
+export async function fetchYoutubeThumbnailWithFallback(
+  videoId: string,
+): Promise<{ url: string; buffer: ArrayBuffer }> {
+  for (const quality of YOUTUBE_THUMBNAIL_QUALITIES) {
+    const url = `https://img.youtube.com/vi/${videoId}/${quality}.jpg`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return { url, buffer: await response.arrayBuffer() };
+    }
+  }
+  throw new Error(`Failed to fetch thumbnail for video ${videoId}`);
+}
+
 export const getDecoratedThumbnailUrl = (thumbnailKey: string) =>
   `https://thumbs.video-to-markdown.com/${thumbnailKey}`;
-
-export const fetchAndDecorateThumb = async (thumbnailUrl: string) => {
-  const orginalBuffer = await fetchThumbnailFromUrl(thumbnailUrl);
-  const initialThumbnailHash = await hashThumbnail(orginalBuffer);
-  const decoratedBuffer = await addPlayIconToThumbnail(orginalBuffer);
-  return { initialThumbnailHash, decoratedBuffer };
-};
 
 export const getYoutubeVideoTitle = async (
   videoId: string,

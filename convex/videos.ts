@@ -6,8 +6,9 @@ import { convex } from "./fluent";
 import {
   extractVideoId,
   getYoutubeVideoTitle,
-  getThumbnailUrlForYoutubeVideo,
-  fetchAndDecorateThumb,
+  fetchYoutubeThumbnailWithFallback,
+  hashThumbnail,
+  addPlayIconToThumbnail,
   getDecoratedThumbnailUrl,
 } from "./utils";
 
@@ -65,10 +66,11 @@ export const processVideoUrl = convex
     if (!videoId) throw new Error("Invalid YouTube URL");
 
     const title = await getYoutubeVideoTitle(videoId);
-    const originalThumbnailUrl = getThumbnailUrlForYoutubeVideo(videoId);
 
-    const { decoratedBuffer, initialThumbnailHash } =
-      await fetchAndDecorateThumb(originalThumbnailUrl);
+    const { url: originalThumbnailUrl, buffer: thumbnailBuffer } =
+      await fetchYoutubeThumbnailWithFallback(videoId);
+    const initialThumbnailHash = await hashThumbnail(thumbnailBuffer);
+    const decoratedBuffer = await addPlayIconToThumbnail(thumbnailBuffer);
 
     const shortId = crypto.randomUUID().substring(0, 8);
     const thumbnailKey = await r2.store(ctx, decoratedBuffer, {
