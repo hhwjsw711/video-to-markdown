@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { R2 } from "@convex-dev/r2";
-import { components, api, internal } from "./_generated/api";
+import { components, api, internal as internalApi } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
 import { convex } from "./fluent";
 import {
@@ -43,6 +43,25 @@ export const createVideo = convex
   })
   .public();
 
+export const getVideoById = convex
+  .query()
+  .input({ id: v.id("videos") })
+  .handler(async (ctx, { id }) => {
+    return await ctx.db.get(id);
+  })
+  .public();
+
+export const getVideoByYoutubeId = convex
+  .query()
+  .input({ videoId: v.string() })
+  .handler(async (ctx, { videoId }) => {
+    return await ctx.db
+      .query("videos")
+      .withIndex("by_videoId", (q) => q.eq("videoId", videoId))
+      .unique();
+  })
+  .internal();
+
 export const getVideos = convex
   .query()
   .input({
@@ -64,6 +83,9 @@ export const processVideoUrl = convex
   .handler(async (ctx, { url }): Promise<Id<"videos">> => {
     const videoId = extractVideoId(url);
     if (!videoId) throw new Error("Invalid YouTube URL");
+
+    const existing = await ctx.runQuery(internalApi.videos.getVideoByYoutubeId, { videoId });
+    if (existing) throw new Error(`DUPLICATE_VIDEO:${existing._id}`);
 
     const title = await getYoutubeVideoTitle(videoId);
 
@@ -88,7 +110,7 @@ export const processVideoUrl = convex
       initialThumbnailHash,
     });
 
-    await ctx.runMutation(internal.thumbnailMonitor.scheduleInitialCheck, {
+    await ctx.runMutation(internalApi.thumbnailMonitor.scheduleInitialCheck, {
       videoId: videoDocId,
     });
 

@@ -1,8 +1,9 @@
 import { useState, FormEvent } from "react";
 import { useAction } from "convex/react";
 import { notifications } from "@mantine/notifications";
-import { TextInput, Button, Stack } from "@mantine/core";
+import { TextInput, Button, Stack, Group, Text } from "@mantine/core";
 import { api } from "../../convex/_generated/api";
+import { routes, useRoute } from "../router";
 
 function getFriendlyError(err: unknown): string {
   const message = err instanceof Error ? err.message : String(err);
@@ -21,6 +22,7 @@ function getFriendlyError(err: unknown): string {
 export default function VideoForm() {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const route = useRoute();
 
   const processVideo = useAction(api.videos.processVideoUrl);
 
@@ -31,15 +33,39 @@ export default function VideoForm() {
 
     setIsLoading(true);
 
+    const page = route.name === "home" && route.params.page != null ? route.params.page : undefined;
+
     processVideo({ url: url.trim() })
       .then(() => setUrl(""))
-      .catch((err) =>
-        notifications.show({
-          title: "Error",
-          message: getFriendlyError(err),
-          color: "red",
-        }),
-      )
+      .catch((err) => {
+        const message = err instanceof Error ? err.message : String(err);
+        if (message.startsWith("DUPLICATE_VIDEO:")) {
+          const existingId = message.replace("DUPLICATE_VIDEO:", "");
+          notifications.show({
+            title: "Already added",
+            message: (
+              <Group justify="space-between" mt={4}>
+                <Text size="sm">This video is already in the list.</Text>
+                <Button
+                  size="xs"
+                  variant="light"
+                  color="yellow"
+                  onClick={() => routes.home({ page, video: existingId }).push()}
+                >
+                  View it
+                </Button>
+              </Group>
+            ),
+            color: "yellow",
+          });
+        } else {
+          notifications.show({
+            title: "Error",
+            message: getFriendlyError(err),
+            color: "red",
+          });
+        }
+      })
       .finally(() => setIsLoading(false));
   };
 

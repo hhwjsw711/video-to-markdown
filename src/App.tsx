@@ -8,9 +8,11 @@ import {
 } from "@mantine/core";
 import VideoForm from "./components/VideoForm";
 import VideosList from "./components/VideosList";
+import VideoModal from "./components/VideoModal";
 import GitHubCorner from "./components/GitHubCorner";
 import ConvexCorner from "./components/ConvexCorner";
 import SparkleTitle from "./components/SparkleTitle";
+import { useRoute } from "./router";
 
 const Logo = () => (
   <ThemeIcon size="xl" radius="md" color="red">
@@ -43,6 +45,9 @@ const VideosSection = () => (
 );
 
 export default function App() {
+  const route = useRoute();
+  const videoParam = route.name === "home" ? route.params.video : undefined;
+
   return (
     <div style={{ minHeight: "100vh", position: "relative" }}>
       <ConvexCorner />
@@ -54,6 +59,7 @@ export default function App() {
           <VideosSection />
         </Stack>
       </Container>
+      {videoParam && <VideoModal videoId={videoParam} />}
     </div>
   );
 }
