@@ -10,6 +10,7 @@ import VideoForm from "./components/VideoForm";
 import VideosList from "./components/VideosList";
 import GitHubCorner from "./components/GitHubCorner";
 import ConvexCorner from "./components/ConvexCorner";
+import SparkleTitle from "./components/SparkleTitle";
 
 const Logo = () => (
   <ThemeIcon size="xl" radius="md" color="red">
@@ -23,9 +24,9 @@ const HeroSection = () => (
   <Stack align="center" gap="md">
     <Group gap="sm">
       <Logo />
-      <Title order={1} fw={700}>
+      <SparkleTitle order={1} fw={700}>
         Video to Markdown
-      </Title>
+      </SparkleTitle>
     </Group>
     <Text size="lg" c="dimmed" maw={600} ta="center">
       Simply paste a YouTube URL and get beautiful markdown code with

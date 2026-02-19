@@ -3,12 +3,10 @@ import {
   Image,
   Text,
   Code,
-  CopyButton,
-  ActionIcon,
-  Tooltip,
   Badge,
-  Stack,
-  Box,
+  Button,
+  Group,
+  CopyButton,
 } from "@mantine/core";
 import { Doc } from "../../convex/_generated/dataModel";
 
@@ -35,77 +33,55 @@ export default function VideoCard({ video }: VideoCardProps) {
   const markdownCode = `[![${video.title}](${video.processedThumbnailUrl})](${video.url})`;
 
   return (
-    <Card shadow="sm" radius="md" withBorder style={{ position: "relative" }}>
-      <Badge
-        size="xs"
-        variant="filled"
-        color="dark"
-        style={{ position: "absolute", top: 8, right: 8, zIndex: 1 }}
+    <Card shadow="md" padding="lg" radius="md" className="video-card">
+      <Card.Section
+        component="a"
+        href={video.url}
+        target="_blank"
+        rel="noopener noreferrer"
       >
-        {timeAgo(video._creationTime)}
-      </Badge>
+        <Image
+          src={video.processedThumbnailUrl}
+          height={200}
+          alt={video.title}
+        />
+      </Card.Section>
 
-      <Stack gap="sm">
-        <Box>
-          <Text size="xs" fw={500} c="dimmed" mb={4}>
-            Preview
-          </Text>
-          <a
-            href={video.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: "block" }}
+      <Group justify="space-between" mt="md" mb="xs">
+        <Text fw={500} lineClamp={1} style={{ flex: 1 }}>
+          {video.title}
+        </Text>
+        <Badge color="gray" variant="light" size="sm">
+          {timeAgo(video._creationTime)}
+        </Badge>
+      </Group>
+
+      <Code
+        block
+        mt="xs"
+        style={{
+          fontSize: "var(--mantine-font-size-xs)",
+          whiteSpace: "pre",
+          overflowX: "auto",
+          userSelect: "all",
+        }}
+      >
+        {markdownCode}
+      </Code>
+
+      <CopyButton value={markdownCode}>
+        {({ copied, copy }) => (
+          <Button
+            color={copied ? "green" : "red"}
+            fullWidth
+            mt="md"
+            radius="md"
+            onClick={copy}
           >
-            <Image
-              src={video.processedThumbnailUrl}
-              alt={video.title}
-              radius="sm"
-            />
-          </a>
-        </Box>
-
-        <Box>
-          <Text size="xs" fw={500} c="dimmed" mb={4}>
-            Markdown Code
-          </Text>
-          <Box style={{ position: "relative" }}>
-            <Code
-              block
-              style={{
-                fontSize: "var(--mantine-font-size-xs)",
-                whiteSpace: "pre",
-                overflowX: "auto",
-                paddingRight: 40,
-              }}
-            >
-              {markdownCode}
-            </Code>
-            <CopyButton value={markdownCode}>
-              {({ copied, copy }) => (
-                <Tooltip label={copied ? "Copied" : "Copy"} withArrow>
-                  <ActionIcon
-                    variant="subtle"
-                    color={copied ? "green" : "gray"}
-                    onClick={copy}
-                    style={{ position: "absolute", top: 6, right: 6 }}
-                    size="sm"
-                  >
-                    {copied ? (
-                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : (
-                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                    )}
-                  </ActionIcon>
-                </Tooltip>
-              )}
-            </CopyButton>
-          </Box>
-        </Box>
-      </Stack>
+            {copied ? "Copied!" : "Copy Markdown to Clipboard"}
+          </Button>
+        )}
+      </CopyButton>
     </Card>
   );
 }
