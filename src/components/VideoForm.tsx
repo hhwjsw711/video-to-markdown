@@ -2,6 +2,7 @@ import { useState, FormEvent } from "react";
 import { useAction } from "convex/react";
 import { notifications } from "@mantine/notifications";
 import { TextInput, Button, Stack, Group, Text } from "@mantine/core";
+import { ConvexError } from "convex/values";
 import { api } from "../../convex/_generated/api";
 import { routes, useRoute } from "../router";
 
@@ -38,9 +39,8 @@ export default function VideoForm() {
     processVideo({ url: url.trim() })
       .then(() => setUrl(""))
       .catch((err) => {
-        const message = err instanceof Error ? err.message : String(err);
-        if (message.startsWith("DUPLICATE_VIDEO:")) {
-          const existingId = message.replace("DUPLICATE_VIDEO:", "");
+        if (err instanceof ConvexError && err.data?.type === "DUPLICATE_VIDEO") {
+          const existingId = err.data.id as string;
           notifications.show({
             title: "Already added",
             message: (

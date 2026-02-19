@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { R2 } from "@convex-dev/r2";
 import { components, api, internal as internalApi } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
@@ -85,7 +85,7 @@ export const processVideoUrl = convex
     if (!videoId) throw new Error("Invalid YouTube URL");
 
     const existing = await ctx.runQuery(internalApi.videos.getVideoByYoutubeId, { videoId });
-    if (existing) throw new Error(`DUPLICATE_VIDEO:${existing._id}`);
+    if (existing) throw new ConvexError({ type: "DUPLICATE_VIDEO", id: existing._id });
 
     const title = await getYoutubeVideoTitle(videoId);
 
