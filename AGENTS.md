@@ -4,7 +4,7 @@
 
 A web app that converts YouTube URLs into markdown snippets with decorated thumbnails. Users paste a YouTube URL, and the app generates a markdown image link with a play-button overlay thumbnail hosted on Cloudflare R2. Thumbnails are periodically re-checked for changes via a scheduled monitoring system.
 
-**Live site:** https://video-to-markdown.com/
+**Live site:** https://vid2md.thumbnailrater.com/
 
 ## Package Manager
 

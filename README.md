@@ -4,7 +4,7 @@ A simple web application that converts YouTube videos into markdown-friendly for
 
 So that it looks somthing like this:
 
-[![What is Convex & Why Should Developers Care?](https://thumbs.video-to-markdown.com/d0f34c88.jpg)](https://youtu.be/BPPThblvitQ)
+[![I spent 10 months making the BEST Christmas lights display & simulator](https://thumbs.thumbnailrater.com/4fdf6bac.jpg)](https://youtu.be/lzWzY74JOuI)
 
 ## What it does
 
@@ -31,7 +31,7 @@ curl -X POST https://quirky-squirrel-220.convex.site/api/markdown \
 
 ```json
 {
-  "markdown": "[![Never Gonna Give You Up](https://thumbs.video-to-markdown.com/abc123.jpg)](https://youtu.be/dQw4w9WgXcQ)",
+  "markdown": "[![Never Gonna Give You Up](https://thumbs.thumbnailrater.com/abc123.jpg)](https://youtu.be/dQw4w9WgXcQ)",
   "title": "Never Gonna Give You Up",
   "url": "https://youtu.be/dQw4w9WgXcQ"
 }
@@ -39,7 +39,7 @@ curl -X POST https://quirky-squirrel-220.convex.site/api/markdown \
 
 If the video has already been processed, the result is returned from cache instantly. If new, it fetches metadata and generates the decorated thumbnail before responding.
 
-Full API documentation is available at [video-to-markdown.com/api](https://video-to-markdown.com/api).
+Full API documentation is available at [vid2md.thumbnailrater.com/api](https://vid2md.thumbnailrater.com/api).
 
 ## Learn More
 

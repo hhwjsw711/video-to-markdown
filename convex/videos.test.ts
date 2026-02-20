@@ -95,7 +95,7 @@ describe("videos module business logic", () => {
         originalThumbnailUrl:
           "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
         processedThumbnailUrl:
-          "https://thumbs.video-to-markdown.com/test-key.jpg",
+          "https://thumbs.thumbnailrater.com/test-key.jpg",
       };
 
       // Verify all required fields are present

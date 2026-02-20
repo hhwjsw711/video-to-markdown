@@ -13,7 +13,7 @@ import {
   Anchor,
 } from "@mantine/core";
 
-const ENDPOINT = "https://quirky-squirrel-220.convex.site/api/markdown";
+const ENDPOINT = "https://compassionate-fennec-144.convex.site/api/markdown";
 
 const REQUEST_EXAMPLE = JSON.stringify({ url: "https://youtu.be/dQw4w9WgXcQ" }, null, 2);
 
@@ -24,7 +24,7 @@ const CURL_EXAMPLE = `curl -X POST ${ENDPOINT} \\
 const RESPONSE_EXAMPLE = JSON.stringify(
   {
     markdown:
-      "[![Never Gonna Give You Up](https://thumbs.video-to-markdown.com/abc123.jpg)](https://youtu.be/dQw4w9WgXcQ)",
+      "[![Never Gonna Give You Up](https://thumbs.thumbnailrater.com/abc123.jpg)](https://youtu.be/dQw4w9WgXcQ)",
     title: "Never Gonna Give You Up",
     url: "https://youtu.be/dQw4w9WgXcQ",
   },
@@ -201,7 +201,7 @@ export default function ApiPage() {
           Convex
         </Anchor>{" "}
         HTTP actions. Thumbnails are hosted on Cloudflare R2 and served via{" "}
-        <Code>thumbs.video-to-markdown.com</Code>.
+        <Code>thumbs.thumbnailrater.com</Code>.
       </Text>
     </Stack>
   );

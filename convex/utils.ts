@@ -81,7 +81,7 @@ export async function fetchYoutubeThumbnailWithFallback(
 }
 
 export const getDecoratedThumbnailUrl = (thumbnailKey: string) =>
-  `https://thumbs.video-to-markdown.com/${thumbnailKey}`;
+  `https://thumbs.thumbnailrater.com/${thumbnailKey}`;
 
 export const getYoutubeVideoTitle = async (
   videoId: string,

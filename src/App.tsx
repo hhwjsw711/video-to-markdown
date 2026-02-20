@@ -110,7 +110,7 @@ const Header = () => {
             >
               API
             </NavLink>
-            <ActionIcon
+            {/* <ActionIcon
               component="a"
               href="https://github.com/mikecann/video-to-markdown"
               target="_blank"
@@ -121,7 +121,7 @@ const Header = () => {
               aria-label="View source on GitHub"
             >
               <GitHubIcon />
-            </ActionIcon>
+            </ActionIcon> */}
           </Group>
         </Group>
       </Container>
@@ -161,7 +161,7 @@ const Footer = () => {
               API
             </Anchor>
             <Divider orientation="vertical" />
-            <Anchor
+            {/* <Anchor
               href="https://github.com/mikecann/video-to-markdown"
               target="_blank"
               rel="noopener noreferrer"
@@ -170,7 +170,7 @@ const Footer = () => {
               underline="never"
             >
               GitHub
-            </Anchor>
+            </Anchor> */}
             <Anchor
               href="https://convex.dev"
               target="_blank"
@@ -217,8 +217,8 @@ export default function App() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <ConvexCorner />
-      <GitHubCorner />
+      {/* <ConvexCorner /> */}
+      {/* <GitHubCorner /> */}
       <Header />
       <Box style={{ flex: 1 }}>
         <Container size="xl" py="xl">
